@@ -5,28 +5,36 @@ const db = require('../data/db')
 
 //CRUD- CREATE
 router.post('/', (req, res) => {
-   db.insert(req.body)
-   .then(item => {
-       res.status(201).json({Message: 'Created'})
-   })
-   .catch(error => {
-       console.log(error)
-       res.status(400).json({errorMessage: 'Please provide title and contents'})
-   })
-   .catch(error => {
-       res.status(500).json({serverError: 'The was an error while saving the post the database'})
-   })
+    const {title, contents} = req.body;
+    if(!title) {
+        res.status(200).json({message: 'Hey fuckhead give me a title'})
+    } else {
+        db.insert({title, contents})
+        .then(item => {  
+            res.status(200).json({item: {item}})
+        })
+        .catch(error => {
+            res.status(500).json(error)    
+        })
+    }
+  
 })
 //==========================================
-router.post('/:id/comments', (req, res, next)=> {
-    db.insert(req.body)
+router.post('/:id/comments', (req, res) => {
+    const comment = { ...req.body, post_id: req.params.id };
+  
+    db.insertComment(comment)
     .then(item => {
-        res.status(201).json(item)
+      res.status(201).json(item);
     })
-    .catch(error => next(err))
-    
-    next()
-})
+    .catch(error => {
+      // log error to server
+      console.log(error);
+      res.status(500).json({
+        message: 'There was an error while saving the comment to the database',
+      });
+    });
+  });
 //=========================================
 
 //CRUD - READ

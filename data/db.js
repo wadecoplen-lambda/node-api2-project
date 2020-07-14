@@ -21,11 +21,16 @@ function findById(id) {
   return db('posts').where({ id: Number(id) });
 }
 
+// function insert(post) {
+//   return db('posts')
+//     .insert(post, 'id')
+//     .then(ids => ({ id: ids[0] }));
+// }
 function insert(post) {
-  return db('posts')
-    .insert(post, 'id')
-    .then(ids => ({ id: ids[0] }));
-}
+   return db('posts')
+      .insert(post, 'id')
+      
+  }
 
 function update(id, post) {
   return db('posts')
